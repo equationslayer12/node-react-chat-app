@@ -17,12 +17,21 @@ export function Chat({ username }: ChatProps) {
 
   let socket = useRef<Socket | null>(null);
 
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState<{ [key: string]: string }[]>([]);
+
   useEffect(() => {
     const token = Cookies.get('token');
     if (token == null) return router.push('/login');
 
     socket.current = io('ws://localhost:5000/', {
       auth: { token: token },
+    });
+    console.log('socket opened');
+
+    socket.current.on('message', (message) => {
+      console.log('received message:', message);
+      setMessages([...messages, message]);
     });
 
     socket.current.on('connect_error', (err) => {
@@ -32,33 +41,37 @@ export function Chat({ username }: ChatProps) {
       return router.push('/login');
     });
 
-    console.log('socket opened');
-
     return () => {
       socket.current?.off();
       console.log('socket closed');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
-
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([
-    <Message key={0} data='hello world' username='pablo'></Message>,
-  ]);
 
   function onSubmit(e: SyntheticEvent) {
     e.preventDefault();
 
     if (socket.current == null) return;
 
-    console.log(message);
+    setMessages([...messages, { message: message, username: username }]);
+
     socket.current.emit('message', message);
 
     setMessage('');
   }
 
+  const messagesList = messages.map((message, index) => {
+    return (
+      <Message
+        key={index}
+        username={message.username}
+        data={message.message}
+      ></Message>
+    );
+  });
   return (
     <Card className='flex rounded-none flex-col items-center justify-between w-full max-w-screen-lg h-screen p-lg bg-slate-600 md:rounded-lg'>
-      <ScrollArea className='w-full'></ScrollArea>
+      <ScrollArea className='w-full'>{messagesList}</ScrollArea>
       <form onSubmit={onSubmit}>
         <Input
           className='mb-2'
