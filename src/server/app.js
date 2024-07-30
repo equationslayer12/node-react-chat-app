@@ -38,7 +38,7 @@ io.use(authSocketToken);
 
 io.on('connection', (socket) => {
   socket.on('message', (message) => {
-    console.log(`Annonymous user sent ${message}`);
+    console.log(`*${socket.user.name}* sent ${message}`);
   });
 });
 
