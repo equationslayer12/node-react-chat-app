@@ -8,6 +8,8 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 
+const { authSocketToken } = require('./middleware/authSocketToken');
+
 const users = {};
 
 const app = express();
@@ -31,6 +33,8 @@ const io = new Server(httpServer, {
     methods: ['GET', 'POST'],
   },
 });
+
+io.use(authSocketToken);
 
 io.on('connection', (socket) => {
   socket.on('message', (message) => {

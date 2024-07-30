@@ -22,6 +22,14 @@ export function Chat({ username }: ChatProps) {
     const socket = io('ws://localhost:5000/', {
       auth: { token: token },
     });
+
+    socket.on('connect_error', (err) => {
+      Cookies.remove('token');
+      Cookies.remove('username');
+
+      return router.push('/login');
+    });
+
     console.log('socket opened');
     socket.emit('message', 'Hello');
 
@@ -29,7 +37,7 @@ export function Chat({ username }: ChatProps) {
       socket.off();
       console.log('socket closed');
     };
-  }, []);
+  }, [router]);
 
   const [message, setMessage] = useState();
   const [messages, setMessages] = useState([
