@@ -32,9 +32,6 @@ export default function LoginPage() {
   return (
     <div className='w-screen flex justify-center p-lg'>
       <p>{errResponse}</p>
-        <button onClick={() => {
-            console.log("token", Cookies.get());
-        }}>hi</button>
       <Login onSubmit={onSubmit}></Login>
     </div>
   );

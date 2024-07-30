@@ -17,7 +17,6 @@ export function Chat({ username }: ChatProps) {
 
   useEffect(() => {
     const token = Cookies.get('token');
-    console.log('token is', token);
     if (token == null) return router.push('/login');
 
     const socket = io('ws://localhost:5000/', {
