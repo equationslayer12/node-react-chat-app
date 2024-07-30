@@ -29,11 +29,6 @@ export function Chat({ username }: ChatProps) {
     });
     console.log('socket opened');
 
-    socket.current.on('message', (message) => {
-      console.log('received message:', message);
-      setMessages([...messages, message]);
-    });
-
     socket.current.on('connect_error', (err) => {
       Cookies.remove('token');
       Cookies.remove('username');
@@ -45,8 +40,19 @@ export function Chat({ username }: ChatProps) {
       socket.current?.off();
       console.log('socket closed');
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
+  useEffect(() => {
+    if (socket.current == null) return;
+    socket.current.on('message', (message) => {
+      console.log('received message:', message);
+      setMessages([...messages, message]);
+    });
+
+    return () => {
+      socket.current?.off('message');
+    };
+  }, [messages]);
 
   function onSubmit(e: SyntheticEvent) {
     e.preventDefault();
