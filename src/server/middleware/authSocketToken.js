@@ -1,4 +1,5 @@
 const { Socket } = require('socket.io');
+const jwt = require('jsonwebtoken');
 
 /**
  * auth socket with jwt.

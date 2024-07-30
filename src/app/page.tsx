@@ -3,7 +3,6 @@
 import { Chat } from '@/components/Chat';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [username, setUsername] = useState('');
