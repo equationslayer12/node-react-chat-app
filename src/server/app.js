@@ -39,6 +39,10 @@ io.use(authSocketToken);
 io.on('connection', (socket) => {
   socket.on('message', (message) => {
     console.log(`*${socket.user.name}* sent ${message}`);
+    socket.broadcast.emit('message', {
+      message: message,
+      username: socket.user.name,
+    });
   });
 });
 
