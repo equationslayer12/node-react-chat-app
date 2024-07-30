@@ -1,0 +1,10 @@
+GET http://localhost:5000/
+
+###
+
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "username": "equationslayer12"
+}

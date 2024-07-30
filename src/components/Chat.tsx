@@ -4,11 +4,32 @@ import { Input } from '@/components/ui/input';
 import { Message } from '@/components/ui/message';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useEffect, useState } from 'react';
-import socket from '@/lib/socket';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { io } from 'socket.io-client';
 
-export function Chat() {
+type ChatProps = {
+  username: string;
+};
+
+export function Chat({ username }: ChatProps) {
+  const router = useRouter();
+
   useEffect(() => {
+    const token = Cookies.get('token');
+    console.log('token is', token);
+    if (token == null) return router.push('/login');
+
+    const socket = io('ws://localhost:5000/', {
+      auth: { token: token },
+    });
+    console.log('socket opened');
     socket.emit('message', 'Hello');
+
+    return () => {
+      socket.off();
+      console.log('socket closed');
+    };
   }, []);
 
   const [message, setMessage] = useState();
